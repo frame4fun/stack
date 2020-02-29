@@ -1,0 +1,52 @@
+version: "3.7"
+
+networks:
+  gb-network:
+    driver: bridge
+
+volumes:
+  neo4j-gb-storage:
+    name: gamebook-storage
+    driver: local
+
+services:
+  front:
+    image: "frame4fun/gamebook-front"
+    container_name: gamebook-front
+    env_file:
+      - ./envs/.front.env
+      - ./envs.local/.front.env
+    expose:
+      - 3001
+    ports:
+      - "3001:3001"
+    networks:
+      - gb-network
+
+  back:
+    image: "frame4fun/gamebook-back"
+    container_name: gamebook-back
+    env_file:
+      - ./envs/.back.env
+      - ./envs.local/.back.env
+    expose:
+      - 3002
+    ports:
+      - "3002:3002"
+      - "9229:9229"
+    networks:
+      - gb-network
+    depends_on:
+      - neo4j
+
+  neo4j:
+    container_name: gamebook-neo4j
+    image: neo4j:latest
+    ports:
+      - "7474:7474"
+      - "7473:7473"
+      - "7687:7687"
+    networks:
+      - gb-network
+    volumes:
+      - neo4j-gb-storage:/data
