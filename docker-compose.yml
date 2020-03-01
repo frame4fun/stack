@@ -15,7 +15,6 @@ services:
     container_name: gamebook-front
     env_file:
       - ./envs/.front.env
-      - ./envs.local/.front.env
     expose:
       - 3001
     ports:
@@ -28,7 +27,6 @@ services:
     container_name: gamebook-back
     env_file:
       - ./envs/.back.env
-      - ./envs.local/.back.env
     expose:
       - 3002
     ports:
@@ -42,6 +40,8 @@ services:
   neo4j:
     container_name: gamebook-neo4j
     image: neo4j:latest
+    env_file:
+      - ./envs/.neo4j.env
     ports:
       - "7474:7474"
       - "7473:7473"
